@@ -57,7 +57,7 @@ public class OIDCProviderSigningKeyResolver implements SigningKeyResolver {
 
 
 	public synchronized void updateKeys() throws IOException {
-		JSONArray keysJson = RequestUtil.getJsonArray(this.jwksURI.toURL());
+		JSONArray keysJson = RequestUtil.getJsonObject(this.jwksURI.toURL()).getJSONArray("keys");
 		for(Object o : keysJson){
 			if(!(o instanceof JSONObject))
 				throw new JSONException("JWKS array contains non-object element");
