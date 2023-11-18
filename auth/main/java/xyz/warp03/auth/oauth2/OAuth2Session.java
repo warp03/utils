@@ -23,13 +23,18 @@ public class OAuth2Session implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
 
+	private final long createdTime = System.currentTimeMillis();
+
 	private final OAuth2Provider provider;
 	private final OAuth2Client client;
 
 	private String scope;
 	private boolean useAuthState = true;
-
 	protected String authState;
+	protected String redirectUri;
+
+	private Object attachment;
+
 	protected String authCode;
 	protected String refreshToken;
 	protected String accessToken;
@@ -65,22 +70,49 @@ public class OAuth2Session implements java.io.Serializable {
 		this.useAuthState = useAuthState;
 	}
 
+	public void setAuthState(String authState){
+		this.setUseAuthState(true);
+		this.authState = authState;
+	}
+
+	public String getAuthState(){
+		if(this.authState == null)
+			this.authState = Util.randomHex(32);
+		return this.authState;
+	}
+
+	public void setRedirectUri(String redirectUri){
+		this.redirectUri = redirectUri;
+	}
+
+	public String getRedirectUri(){
+		return this.redirectUri;
+	}
+
 
 	public URI getAuthRequestURL(){
 		if(this.scope == null)
 			throw new IllegalStateException("scope must be set using setScope");
-		String[] query = new String[this.useAuthState ? 8 : 6];
+		int qlen = 6;
+		if(this.useAuthState)
+			qlen += 2;
+		if(this.redirectUri != null)
+			qlen += 2;
+		String[] query = new String[qlen];
 		query[0] = "response_type";
 		query[1] = "code";
 		query[2] = "client_id";
 		query[3] = this.client.getClientId();
 		query[4] = "scope";
 		query[5] = this.scope;
+		int qi = 6;
 		if(this.useAuthState){
-			if(this.authState == null)
-				this.authState = Util.randomHex(32);
-			query[6] = "state";
-			query[7] = this.authState;
+			query[qi++] = "state";
+			query[qi++] = this.getAuthState();
+		}
+		if(this.redirectUri != null){
+			query[qi++] = "redirect_uri";
+			query[qi++] = this.redirectUri;
 		}
 		return this.provider.constructAuthorizationURL(query);
 	}
@@ -88,7 +120,7 @@ public class OAuth2Session implements java.io.Serializable {
 	public boolean authCallback(String code, String state){
 		if(this.accessToken != null)
 			return false;
-		if(this.useAuthState && !state.equals(this.authState))
+		if(this.useAuthState && !state.equals(this.getAuthState()))
 			return false;
 		this.authCode = code;
 		return true;
@@ -133,8 +165,42 @@ public class OAuth2Session implements java.io.Serializable {
 	// TODO token refresh
 
 
+	public void setAttachment(Object attachment){
+		this.attachment = attachment;
+	}
+
+	public Object getAttachment(){
+		return this.attachment;
+	}
+
+
+	public String getAuthCode(){
+		return this.authCode;
+	}
+
+	public String getRefreshToken(){
+		return this.refreshToken;
+	}
+
 	public boolean hasAccessToken(){
 		return this.accessToken != null;
+	}
+
+	public String getAccessToken(){
+		return this.accessToken;
+	}
+
+	public String getAccessTokenType(){
+		return this.accessTokenType;
+	}
+
+	public long getAccessTokenExpires(){
+		return this.accessTokenExpires;
+	}
+
+
+	public long getCreatedTime(){
+		return this.createdTime;
 	}
 
 	public OAuth2Provider getProvider(){

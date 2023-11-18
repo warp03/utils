@@ -25,14 +25,18 @@ public final class RequestUtil {
 
 
 	public static String urlEncode(String... parameters){
+		return urlEncode(false, parameters);
+	}
+
+	public static String urlEncode(boolean escape, String... parameters){
 		StringBuilder queryBuilder = new StringBuilder();
 		try{
 			for(int i = 0; i < parameters.length - 1; i += 2){
 				if(i > 0)
 					queryBuilder.append('&');
-				queryBuilder.append(URLEncoder.encode(parameters[i], "UTF-8"));
+				queryBuilder.append(escape ? URLEncoder.encode(parameters[i], "UTF-8") : parameters[i]);
 				queryBuilder.append('=');
-				queryBuilder.append(URLEncoder.encode(parameters[i + 1], "UTF-8"));
+				queryBuilder.append(escape ? URLEncoder.encode(parameters[i + 1], "UTF-8") : parameters[i + 1]);
 			}
 		}catch(IOException e){
 			throw new java.io.UncheckedIOException(e);
@@ -41,7 +45,7 @@ public final class RequestUtil {
 	}
 
 	public static URI appendQueryParameters(URI oldUri, String... queryParameters){
-		String newQuery = urlEncode(queryParameters);
+		String newQuery = urlEncode(false, queryParameters); // escape = false needed here, weird URI constructor behavior
 		String queryStr = oldUri.getQuery();
 		if(queryStr == null)
 			queryStr = newQuery;
