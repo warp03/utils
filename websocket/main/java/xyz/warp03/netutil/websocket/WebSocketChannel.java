@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2021 user94729
+ * Copyright (C) 2021-2023 warp03
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
  * If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package xyz.user94729.netutil.websocket;
+package xyz.warp03.netutil.websocket;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import org.omegazero.net.socket.SocketConnection;
 
 public class WebSocketChannel {
 
-	private static final int maxPayloadSize = PropertyUtil.getInt("xyz.user94729.netutil.websocket.maxPayloadSize", 0);
+	private static final int maxPayloadSize = PropertyUtil.getInt("xyz.warp03.netutil.websocket.maxPayloadSize", 0);
 
 	protected final SocketConnection connection;
 	private final boolean client;

@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2021 user94729
+ * Copyright (C) 2021-2023 warp03
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
  * If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package xyz.user94729.netutil.websocket;
+package xyz.warp03.netutil.websocket;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,9 +21,9 @@ import java.util.Random;
 
 import org.omegazero.net.socket.SocketConnection;
 
-import xyz.user94729.netutil.websocket.http.HTTPMessage;
-import xyz.user94729.netutil.websocket.http.HTTPUtil;
-import xyz.user94729.netutil.websocket.http.InvalidMessageException;
+import xyz.warp03.netutil.websocket.http.HTTPMessage;
+import xyz.warp03.netutil.websocket.http.HTTPUtil;
+import xyz.warp03.netutil.websocket.http.InvalidMessageException;
 
 public class WebSocketClient extends WebSocketChannel {
 

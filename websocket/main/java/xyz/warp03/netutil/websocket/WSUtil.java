@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2021 user94729
+ * Copyright (C) 2021-2023 warp03
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
  * If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package xyz.user94729.netutil.websocket;
+package xyz.warp03.netutil.websocket;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -42,16 +42,10 @@ public final class WSUtil {
 	 */
 	public static WebSocketClient createClient(NetClientManager clientManager, URL target) throws IOException {
 		SocketAddress remote = new InetSocketAddress(InetAddress.getByName(target.getHost()), target.getDefaultPort());
-		ConnectionParameters params;
-		if(clientManager instanceof org.omegazero.net.client.TLSClientManager){
-			TLSConnectionParameters tlsparams = new TLSConnectionParameters(remote);
-			tlsparams.setAlpnNames(new String[] { "http/1.1" });
-			tlsparams.setSniOptions(new String[] { target.getHost() });
-			params = tlsparams;
-		}else{
-			params = new ConnectionParameters(remote);
-		}
-		SocketConnection conn = clientManager.connection(params);
+		TLSConnectionParameters tlsparams = new TLSConnectionParameters(remote);
+		tlsparams.setAlpnNames(new String[] { "http/1.1" });
+		tlsparams.setSniOptions(new String[] { target.getHost() });
+		SocketConnection conn = clientManager.connection(tlsparams);
 		return new WebSocketClient(conn, target);
 	}
 
