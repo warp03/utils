@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2022 user94729
+ * Copyright (C) 2022-2023 warp03
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
  * If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package xyz.user94729.auth.oidc;
+package xyz.warp03.auth.oidc;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -28,9 +28,9 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.SigningKeyResolver;
 import io.jsonwebtoken.io.Decoders;
 
-import xyz.user94729.auth.oauth2.OAuth2Client;
-import xyz.user94729.auth.oauth2.OAuth2Provider;
-import xyz.user94729.auth.util.RequestUtil;
+import xyz.warp03.auth.oauth2.OAuth2Client;
+import xyz.warp03.auth.oauth2.OAuth2Provider;
+import xyz.warp03.auth.util.RequestUtil;
 
 public class OIDCProviderSigningKeyResolver implements SigningKeyResolver {
 
