@@ -70,9 +70,17 @@ public class OIDCSession extends OAuth2Session {
 		response.getString("sub"); // require sub
 		Map<String, String> data = new java.util.HashMap<>();
 		for(String k : response.keySet()){
-			String v = response.optString(k, null);
-			if(v != null)
-				data.put(k, v);
+			Object v = response.get(k);
+			if((v instanceof String) || (v instanceof Boolean) || (v instanceof Number)){
+				data.put(k, v.toString());
+			}else if((v instanceof JSONObject)){
+				JSONObject vo = (JSONObject) v;
+				for(String k2 : vo.keySet()){
+					String v2 = vo.optString(k2, null);
+					if(v2 != null)
+						data.put(k + "." + k2, v2);
+				}
+			}
 		}
 		return data;
 	}
