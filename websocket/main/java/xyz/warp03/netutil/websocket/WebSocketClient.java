@@ -56,8 +56,8 @@ public class WebSocketClient extends WebSocketChannel {
 		super(connection, true, toResourceURI(target));
 		this.target = target;
 
-		this.connection.setOnData(this::responseData);
-		this.connection.setOnClose(() -> {
+		this.connection.once("data", (org.omegazero.common.event.runnable.GenericRunnable.A1<byte[]>) this::responseData);
+		this.connection.on("close", () -> {
 			WebSocketClient.super.close0(-1);
 		});
 
@@ -116,7 +116,7 @@ public class WebSocketClient extends WebSocketChannel {
 		if(super.getResource().getRawQuery() != null)
 			rp += "?" + super.getResource().getRawQuery();
 		HTTPMessage request = HTTPUtil.newRequest("GET", rp);
-		request.setHeader("user-agent", "u949-websocket-java");
+		request.setHeader("user-agent", "u9-websocket");
 		request.setHeader("host", this.target.getAuthority());
 		request.setHeader("upgrade", "websocket");
 		request.setHeader("connection", "upgrade");

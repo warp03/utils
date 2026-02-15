@@ -60,8 +60,8 @@ public class WebSocketChannel {
 		else
 			this.wsProtocol = "";
 
-		this.connection.setOnData(this::incomingData);
-		this.connection.setOnClose(this::connectionClose);
+		this.connection.on("data", (org.omegazero.common.event.runnable.GenericRunnable.A1<byte[]>) this::incomingData);
+		this.connection.on("close", this::connectionClose);
 
 		this.handshakeComplete = true;
 	}
@@ -99,7 +99,7 @@ public class WebSocketChannel {
 
 	private boolean readNextFrameHeader() throws InvalidWSFrameException {
 		if(this.lastFrameFlags < 0 && this.frameBuffer.remaining() >= 2){
-			this.lastFrameFlags = this.frameBuffer.read() & 0xff | (this.frameBuffer.read() << 8);
+			this.lastFrameFlags = this.frameBuffer.read() & 0xff | ((this.frameBuffer.read() & 0xff) << 8);
 			if((this.lastFrameFlags & 0x70) != 0)
 				return this.wsProtocolError("RSV bits must be clear");
 			if((this.lastFrameFlags & 0x8000) != 0){
@@ -361,14 +361,12 @@ public class WebSocketChannel {
 	}
 
 	/**
-	 * Sets a callback that is called when a WebSocket protocol error occurs. This method also sets the <code>onError</code> handler of the underlying
-	 * <code>SocketConnection</code> using {@link SocketConnection#setOnError(Consumer)}.
+	 * Sets a callback that is called when a WebSocket protocol error occurs.
 	 * 
 	 * @param onError The callback
 	 */
 	public void setOnError(Consumer<Throwable> onError) {
 		this.onError = onError;
-		this.connection.setOnError(onError);
 	}
 
 	/**

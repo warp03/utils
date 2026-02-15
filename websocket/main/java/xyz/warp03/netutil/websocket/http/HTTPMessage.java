@@ -69,12 +69,17 @@ public class HTTPMessage {
 			sb.append(header.getKey()).append(": ").append(header.getValue()).append("\r\n");
 		}
 		sb.append("\r\n");
-		if(this.data != null)
-			sb.append(new String(this.data));
 		return sb.toString();
 	}
 
 	public byte[] toBytes() {
-		return this.toString().getBytes(StandardCharsets.ISO_8859_1);
+		this.setHeader("content-length", String.valueOf(this.data != null ? this.data.length : 0));
+		byte[] headers = this.toString().getBytes(StandardCharsets.ISO_8859_1);
+		if(this.data != null && this.data.length > 0){
+			byte[] c = java.util.Arrays.copyOf(headers, headers.length + this.data.length);
+			System.arraycopy(this.data, 0, c, headers.length, this.data.length);
+			headers = c;
+		}
+		return headers;
 	}
 }

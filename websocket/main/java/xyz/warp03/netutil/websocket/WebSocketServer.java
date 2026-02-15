@@ -45,6 +45,7 @@ public class WebSocketServer {
 	 * {@link #newConnection(SocketConnection)}.
 	 */
 	public WebSocketServer() {
+		this.additionalHeaders.put("server", "u9-websocket");
 	}
 
 
@@ -112,7 +113,7 @@ public class WebSocketServer {
 	 * @param connection A <code>SocketConnection</code> received through {@link NetServer#setConnectionCallback(Consumer)}
 	 */
 	public void newConnection(SocketConnection connection) {
-		connection.setOnData((data) -> {
+		connection.once("data", (org.omegazero.common.event.runnable.GenericRunnable.A1<byte[]>) (data) -> {
 			if(this.onClient == null)
 				return;
 			WebSocketChannel channel = this.processClientRequest(connection, data);
@@ -167,7 +168,9 @@ public class WebSocketServer {
 			if(this.onRequest != null){
 				HTTPMessage errResp = this.onRequest.apply(requestURI, request);
 				if(errResp != null){
+					errResp.setHeader("connection", "close");
 					this.respondHTTP(connection, errResp);
+					connection.close();
 					return null;
 				}
 			}
@@ -195,9 +198,11 @@ public class WebSocketServer {
 			return wsc;
 		}catch(InvalidMessageException e){
 			logger.debug("Invalid request from ", connection.getApparentRemoteAddress(), ": ", e.getMessage());
-			HTTPMessage response = HTTPUtil.newResponse(400, "Bad Request".getBytes(StandardCharsets.UTF_8));
+			HTTPMessage response = HTTPUtil.newResponse(400, ("Bad Request: " + e.getMessage()).getBytes(StandardCharsets.UTF_8));
 			response.setHeader("content-type", "text/plain; utf-8");
+			response.setHeader("connection", "close");
 			this.respondHTTP(connection, response);
+			connection.close();
 			return null;
 		}
 	}

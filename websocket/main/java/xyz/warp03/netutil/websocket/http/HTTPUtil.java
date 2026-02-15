@@ -29,7 +29,7 @@ public class HTTPUtil {
 	}
 
 	public static HTTPMessage parseMessage(byte[] data) {
-		int headerEnd = ArrayUtil.byteArrayIndexOf(data, HTTP1_HEADER_END);
+		int headerEnd = ArrayUtil.indexOf(data, HTTP1_HEADER_END);
 		if(headerEnd < 0)
 			return null;
 
